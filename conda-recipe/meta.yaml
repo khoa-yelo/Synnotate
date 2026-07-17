@@ -1,0 +1,60 @@
+{% set name = "synnotate" %}
+{% set version = "0.1.0" %}
+
+package:
+  name: {{ name }}
+  version: {{ version }}
+
+source:
+  url: https://github.com/khoa-yelo/Synnotate/archive/refs/tags/v{{ version }}.tar.gz
+  sha256: eebe309b366fafc940210a04f97fa813b6060a580dd9d0f9a8a2336992c35abc
+
+build:
+  noarch: python
+  number: 0
+  script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
+  entry_points:
+    - synnotate = synnotate.cli:main
+
+requirements:
+  host:
+    - python >=3.10
+    - pip
+    - setuptools >=64
+  run:
+    - python >=3.10
+    - numpy >=1.24
+    - pytorch >=2.1
+    - faiss-cpu >=1.7
+    - pandas >=2.0
+    - pyarrow >=12
+    - biopython >=1.81
+    - pyrodigal >=3.0
+    - pyrodigal-gv
+
+test:
+  imports:
+    - synnotate
+  commands:
+    - synnotate --help
+    - synnotate --version
+
+about:
+  home: https://github.com/khoa-yelo/Synnotate
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE
+  summary: "Synteny-transformer gene-function annotation from genomic context, including the dark proteome"
+  description: |
+    Synnotate predicts a gene's function from its genomic neighbourhood using an interpretable
+    additive context transformer, annotating genes that sequence-homology tools leave as
+    "hypothetical protein" (the dark proteome). Predictions carry a softmax confidence and an
+    optional kNN + MSA synteny-adjusted confidence plus exact per-neighbour attributions. The
+    model, vocabulary, and FAISS retrieval index are downloaded separately via `synnotate setup`.
+    Neighbour annotation uses GFF product-string matching, a user table, eggNOG-mapper
+    (prokaryote), or Pharokka (phage).
+  dev_url: https://github.com/khoa-yelo/Synnotate
+
+extra:
+  recipe-maintainers:
+    - khoa-yelo
