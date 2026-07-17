@@ -9,7 +9,8 @@ description = "Synteny-transformer gene-function annotation from genomic context
 readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "MIT" }
-authors = [{ name = "Synnotate authors" }]
+authors = [{ name = "Khoa Hoang" }]
+urls = { Homepage = "https://github.com/khoa-yelo/Synnotate", Repository = "https://github.com/khoa-yelo/Synnotate" }
 dependencies = [
     "numpy>=1.24",
     "torch>=2.1",
