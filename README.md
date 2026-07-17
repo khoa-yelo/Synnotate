@@ -31,20 +31,41 @@ automatically. Gene calling uses `pyrodigal` / `pyrodigal-gv` in-process.
 
 ### Download the interpretation bundle
 
-The model, vocabulary, and retrieval index ship as a separate **bundle** (they are too large for a
-Python wheel). `synnotate setup` downloads and verifies it, exactly like Pharokka's
-`install_databases.py`:
+The model, vocabulary, and retrieval index are downloaded separately (too large for a Python wheel).
+Pick a directory and download the prokaryote bundle into it:
 
 ```bash
-synnotate setup --type prokaryote                 # download to ~/.synnotate/bundle/prokaryote
-synnotate setup --type prokaryote --dir /data/db  # ... or a location you choose
-synnotate setup --type prokaryote --from ./bundle # ... or install a local copy / .tar.gz
-synnotate setup --type prokaryote --check         # verify an installed bundle (sha256 MANIFEST)
+synnotate setup --type prokaryote --dir ./synnotate_db
 ```
 
-`setup` fetches a versioned tarball, md5-checks it, extracts, and verifies a per-file sha256
-manifest. The bundle URL/md5 live in `synnotate/cli.py::BUNDLE_REGISTRY`, or override with
-`$SYNNOTATE_BUNDLE_URL_PROKARYOTE`. Bundles are published on Zenodo (DOI in the release notes).
+This fetches a versioned tarball, verifies its checksum, and extracts it into `./synnotate_db`. Pass
+that directory to every `annotate` call with `--bundle ./synnotate_db`. Bundles are published on
+Zenodo (URL/checksum in the release notes).
+
+Other options:
+
+```bash
+synnotate setup --type prokaryote --dir ./synnotate_db --from ./bundle   # install a local dir or .tar.gz
+synnotate setup --type prokaryote --dir ./synnotate_db --check           # verify the download (sha256)
+```
+
+### Try it on the example data
+
+The repository ships a small example under [`examples/`](examples/): a division/cell-wall (`dcw`)
+gene cluster where `ftsL` has been blanked to `hypothetical protein`. From the neighbouring gene
+families alone, Synnotate recovers it:
+
+```bash
+synnotate annotate examples/demo.fna --type prokaryote --bundle ./synnotate_db \
+    --gff examples/demo.gff --backend gff --interpret --out demo
+```
+
+```
+gene_id  annotation  prediction                   confidence  synteny_support
+dcw_03   UNKNOWN     cell division protein FtsL    0.55        0.63
+```
+
+(driven by its neighbours: `-1 RsmH`, `+1 FtsI`, `+2 MurF`.) See [`examples/README.md`](examples/README.md).
 
 ---
 
@@ -77,16 +98,16 @@ download_eggnog_data.py            # downloads its ~50 GB database
 
 ```bash
 # 1. an already-annotated genome — no external annotation tool, add synteny + attributions
-synnotate annotate genome.fna --type prokaryote --gff pgap.gff --interpret --out result
+synnotate annotate genome.fna --type prokaryote --bundle ./synnotate_db --gff pgap.gff --interpret --out result
 
 # 2. an un-annotated genome — run eggNOG-mapper to name neighbours, then predict
-synnotate annotate genome.fna --type prokaryote --backend eggnog --out result
+synnotate annotate genome.fna --type prokaryote --bundle ./synnotate_db --backend eggnog --out result
 
-# 3. a phage genome (Pharokka backend)
-synnotate annotate phage.fna --type phage --interpret --out result
+# 3. a phage genome
+synnotate annotate phage.fna --type phage --bundle ./synnotate_db --interpret --out result
 
 # 4. bring your own neighbour families
-synnotate annotate genome.fna --type prokaryote --annotations fams.tsv --out result
+synnotate annotate genome.fna --type prokaryote --bundle ./synnotate_db --annotations fams.tsv --out result
 ```
 
 Outputs `result.synnotate.tsv` (and, with `--gff-out`, an annotated GFF).

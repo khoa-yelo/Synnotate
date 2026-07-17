@@ -83,8 +83,8 @@ def _sha256(path, buf=1 << 20):
     return h.hexdigest()
 
 
-# a handful of required files -> a CHEAP presence check for the idempotent skip (Pharokka-style:
-# don't re-hash a multi-GB bundle on every run; full sha256 is reserved for `setup --check`).
+# a handful of required files -> a CHEAP presence check for the idempotent skip: don't re-hash a
+# multi-GB bundle on every run; full sha256 verification is reserved for `setup --check`.
 _REQUIRED = ["config.json", "curated_context.pt", "vocab.json", "label_vocab.json",
              "index/ctx_cur.faiss", "index/meta.parquet"]
 

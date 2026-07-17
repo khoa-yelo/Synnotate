@@ -1,0 +1,14 @@
+##gff-version 3
+contig1	PGAP	CDS	500	1349	.	+	.	ID=dcw_01;product=division/cell wall cluster transcriptional repressor MraZ
+contig1	PGAP	CDS	1439	2288	.	+	.	ID=dcw_02;product=16S rRNA (cytosine(1402)-N(4))-methyltransferase RsmH
+contig1	PGAP	CDS	2378	3227	.	+	.	ID=dcw_03;product=hypothetical protein
+contig1	PGAP	CDS	3317	4166	.	+	.	ID=dcw_04;product=peptidoglycan D,D-transpeptidase FtsI family protein
+contig1	PGAP	CDS	4256	5105	.	+	.	ID=dcw_05;product=UDP-N-acetylmuramoyl-tripeptide--D-alanyl-D-alanine ligase
+contig1	PGAP	CDS	5195	6044	.	+	.	ID=dcw_06;product=phospho-N-acetylmuramoyl-pentapeptide-transferase
+contig1	PGAP	CDS	6134	6983	.	+	.	ID=dcw_07;product=FtsW/RodA/SpoVE family cell cycle protein
+contig1	PGAP	CDS	7073	7922	.	+	.	ID=dcw_08;product=UDP-N-acetylglucosamine--N-acetylmuramyl-(pentapeptide) pyrophosphoryl-undecaprenol N-acetylglucosamine transferase
+contig1	PGAP	CDS	8012	8861	.	+	.	ID=dcw_09;product=UDP-N-acetylmuramate--L-alanine ligase
+contig1	PGAP	CDS	8951	9800	.	+	.	ID=dcw_10;product=D-alanine--D-alanine ligase
+contig1	PGAP	CDS	9890	10739	.	+	.	ID=dcw_11;product=cell division protein FtsQ
+contig1	PGAP	CDS	10829	11678	.	+	.	ID=dcw_12;product=cell division protein FtsA
+contig1	PGAP	CDS	11768	12617	.	+	.	ID=dcw_13;product=cell division protein FtsZ
