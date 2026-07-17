@@ -1,0 +1,25 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.eggs/
+.pytest_cache/
+.venv/
+venv/
+
+# Model bundles / data (distributed via Zenodo, not git)
+*.tar.gz
+*.faiss
+*.pt
+*.npy
+*.parquet
+bundle*/
+*.synnotate.tsv
+synnotate_out*/
+*_work/
+
+# OS / editor
+.DS_Store
+*.swp

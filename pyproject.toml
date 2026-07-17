@@ -1,0 +1,35 @@
+[build-system]
+requires = ["setuptools>=64", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "synnotate"
+version = "0.1.0"
+description = "Synteny-transformer gene-function annotation from genomic context (phage & prokaryote)"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "Synnotate authors" }]
+dependencies = [
+    "numpy>=1.24",
+    "torch>=2.1",
+    "faiss-cpu>=1.7",
+    "pandas>=2.0",
+    "pyarrow>=12",
+    "biopython>=1.81",
+]
+
+[project.optional-dependencies]
+# gene-calling is in-process (pyrodigal / pyrodigal-gv). Neighbour-annotation backends are external
+# CLIs invoked as subprocesses only when used: eggNOG-mapper (prokaryote, `--backend eggnog`) and
+# Pharokka (phage). Neither is required for `--backend gff` (GFF product-string matching) or
+# `--annotations`. Install eggNOG-mapper via `mamba install -c bioconda eggnog-mapper`.
+genecall = ["pyrodigal>=3.0"]
+dev = ["pytest>=7"]
+
+[project.scripts]
+synnotate = "synnotate.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["synnotate*"]
