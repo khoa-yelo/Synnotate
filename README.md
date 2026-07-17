@@ -51,9 +51,9 @@ synnotate setup --type prokaryote --dir ./synnotate_db --check           # verif
 
 ### Try it on the example data
 
-The repository ships a small example under [`examples/`](examples/): a division/cell-wall (`dcw`)
-gene cluster where `ftsL` has been blanked to `hypothetical protein`. From the neighbouring gene
-families alone, Synnotate recovers it:
+The repository ships a small example under [`examples/`](examples/): the conserved S10–spc
+ribosomal-protein operon where the central gene (ribosomal protein L16) has been blanked to
+`hypothetical protein`. From the neighbouring gene families alone, Synnotate recovers it:
 
 ```bash
 synnotate annotate examples/demo.fna --type prokaryote --bundle ./synnotate_db \
@@ -62,10 +62,10 @@ synnotate annotate examples/demo.fna --type prokaryote --bundle ./synnotate_db \
 
 ```
 gene_id  annotation  prediction                   confidence  synteny_support
-dcw_03   UNKNOWN     cell division protein FtsL    0.55        0.63
+rps_09   UNKNOWN     50S ribosomal protein L16     1.00        0.99
 ```
 
-(driven by its neighbours: `-1 RsmH`, `+1 FtsI`, `+2 MurF`.) See [`examples/README.md`](examples/README.md).
+(driven by its neighbours: `-1 S3`, `+1 L29`, `+2 S17`.) See [`examples/README.md`](examples/README.md).
 
 ---
 
