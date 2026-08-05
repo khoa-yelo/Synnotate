@@ -1,6 +1,6 @@
 # Synnotate
 
-**Context-based annotation of bacterial and phage genomes"
+**Context-based annotation of bacterial and phage genomes"**
 
 Synnotate annotates genes remains unannotated after sequence and structural similarity search ("hypothetical/uncharacterized protein") based on neighbor genes annnotation
 
