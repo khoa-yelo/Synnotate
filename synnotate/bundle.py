@@ -11,6 +11,7 @@ Bundle layout (per organism type, produced by `synnotate setup`):
   index/ctx_cur.faiss    curated-context retrieval index
   index/meta.parquet     row -> (genome_id, gene_id, label_id)
   index/loci_tokens.npy  curated +/-W family windows (row-aligned, for kNN + MSA)
+  calibration.json       (optional) deploy temperature + isotonic map + trusted-region contours
 """
 from __future__ import annotations
 import json, os
@@ -32,8 +33,34 @@ class Bundle:
             setattr(self, k, self.vocab[k])
         self.seg = np.load(os.path.join(path, "seg.npy")) if os.path.exists(os.path.join(path, "seg.npy")) \
             else np.array([0]*self.W + [1] + [2]*self.W, dtype=np.int64)
+        # ---- calibration (optional): temperature + isotonic map + trusted-region contours -------
+        # Without it the tool degrades gracefully to raw softmax confidence and no trust flag.
+        self.calib = self._maybe_json("calibration.json")
+        self.deploy_temp = float(self.calib.get("deploy_temp", 1.0))
+        self._iso_x = np.asarray(self.calib.get("isotonic_x", []), dtype=float)
+        self._iso_y = np.asarray(self.calib.get("isotonic_y", []), dtype=float)
+        self.trusted_region = self.calib.get("trusted_region", {})   # {"0.95":{a,p,q}, "0.99":{...}}
         # lazy heavy assets
         self._model = None; self._index = None; self._meta = None; self._loci = None
+
+    def calibrate(self, conf):
+        """Map a temperature-scaled max-probability to a calibrated expected accuracy via the
+        isotonic map. Identity if the bundle ships no isotonic map."""
+        if self._iso_x.size == 0:
+            return float(conf)
+        return float(np.interp(float(conf), self._iso_x, self._iso_y))
+
+    def trust_level(self, conf, syn):
+        """Strictest expected-accuracy threshold whose trusted-region contour the prediction meets,
+        as a string ('0.99' > '0.95'); '' if it meets none / no contours are shipped. The contour is
+        `syn >= a - p*conf - q*conf^2` (clipped to [0,1]), fit on calibrated confidence x synteny."""
+        best = ""
+        for thr in sorted(self.trusted_region):                       # '0.95' before '0.99'
+            r = self.trusted_region[thr]
+            bound = min(max(r["a"] - r["p"]*conf - r["q"]*conf*conf, 0.0), 1.0)
+            if syn >= bound:
+                best = thr
+        return best
 
     def _maybe_json(self, name):
         p = os.path.join(self.path, name)

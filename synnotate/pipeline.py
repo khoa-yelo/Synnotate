@@ -207,26 +207,31 @@ def run(fasta, bundle, gff=None, annotations=None, interpret=False, k=5, device=
         P = torch.tensor(tpos[sl], device=device)
         with torch.no_grad():
             logits = m(T, S, D, G, P); prob = torch.softmax(logits, 1)
-            conf, idx = prob.max(1)
+            conf_raw, idx = prob.max(1)
+            # temperature is monotonic -> argmax (idx) unchanged; it only rescales the max-prob that
+            # the isotonic map then turns into a calibrated expected accuracy.
+            conf_t = torch.softmax(logits / bundle.deploy_temp, 1).max(1).values
             emb = m(T, S, D, G, P, return_emb=True)
             emb = torch.nn.functional.normalize(emb, dim=1).cpu().numpy()
-        idx = idx.cpu().numpy(); conf = conf.cpu().numpy()
+        idx = idx.cpu().numpy(); conf_raw = conf_raw.cpu().numpy(); conf_t = conf_t.cpu().numpy()
         top5 = prob.topk(5, 1).indices.cpu().numpy()
         for a, gi in enumerate(range(s, min(s+B, len(genes)))):
             g = genes[gi]
             pred = bundle.ilabel.get(int(idx[a]), "?")
+            cal = bundle.calibrate(float(conf_t[a]))     # calibrated expected accuracy (== raw if no map)
             rec = {"gene_id": g.gene_id, "contig": g.contig, "start": g.start, "end": g.end,
                    "strand": g.strand, "annotation": families[gi], "prediction": pred,
-                   "confidence": round(float(conf[a]), 4),
+                   "confidence": round(cal, 4), "confidence_raw": round(float(conf_raw[a]), 4),
                    "top5": ";".join(bundle.ilabel.get(int(t), "?") for t in top5[a]),
                    "category": bundle.label2cat.get(pred, "")}
             if interpret:
                 syn = itp.synteny(emb[a], fam[gi], g.contig, bundle, k=k)
                 _, drv = itp.driving_neighbours(bundle, toks[gi], strd[gi], dist[gi], seg[gi], int(tpos[gi]), device=device)
-                rec["adjusted_confidence"] = round(itp.adjusted_conf(float(conf[a]), syn["synteny_conf"]), 4)
                 rec["synteny_support"] = round(syn["synteny_conf"], 4)
                 rec["mean_flank_ident"] = round(syn["mean_flank_ident"], 4)
                 rec["target_slot_conserved"] = round(syn["target_slot_conserved"], 4)
+                # strictest expected-accuracy threshold met by calibrated conf x synteny (paper's gate)
+                rec["trusted"] = bundle.trust_level(cal, syn["synteny_conf"])
                 rec["driving_neighbours"] = ";".join(f"{d['offset']:+d}:{d['family']}({d['contribution']:.2f})" for d in drv)
             rows.append(rec)
     return genes, rows

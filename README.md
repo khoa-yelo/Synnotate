@@ -1,8 +1,14 @@
 # Synnotate
 
-**Context-based annotation of bacterial and phage genomes"**
+**Annotate bacterial and phage genomes — including the genes other tools leave as "hypothetical protein."**
 
-Synnotate annotates genes remains unannotated after sequence and structural similarity search ("hypothetical/uncharacterized protein") based on neighbor genes annnotation
+Synnotate works out what a gene does from the company it keeps: the genes around it. Because it
+reads a gene's *neighbourhood* instead of its sequence, it can put a name to genes that have no known
+match in any database — the "dark" genes that ordinary annotation leaves blank.
+
+For every gene you get a predicted function and a confidence score. You can also ask Synnotate to
+show its evidence: whether the same gene neighbourhood turns up in other genomes, and which
+neighbours led it to the answer.
 
 ## Install
 
@@ -29,9 +35,13 @@ synnotate annotate examples/demo.fna --type prokaryote --bundle ./synnotate_db \
 ```
 
 ```
-gene_id  prediction                   confidence  synteny_support
-rps_09   50S ribosomal protein L16    1.00        0.99
+gene_id  annotation  prediction                   confidence  synteny_support  trusted
+dcw_03   UNKNOWN     cell division protein FtsL    0.77        0.65             0.95
 ```
+
+`confidence` is a **calibrated expected accuracy** (a 0.95 means ~95% of such calls are right), and
+`trusted` flags the strictest accuracy tier — `0.99`, `0.95`, or blank — that the call meets from
+confidence and synteny together.
 
 ## Annotate your genome
 
@@ -75,13 +85,17 @@ download_eggnog_data.py
 Synnotate writes `result.synnotate.tsv`, one row per gene:
 
 - **prediction** — the predicted function
-- **confidence** — how sure Synnotate is, from 0 to 1
+- **confidence** — a **calibrated expected accuracy** (isotonic regression), so 0.95 means ~95% of
+  such predictions are correct
+- **confidence_raw** — the uncalibrated softmax score, for reference
 - **top5** — the five most likely functions
 - **category** — a broad functional category
 
 With `--interpret`, you also get:
 
 - **synteny_support** — how strongly other genomes back up the call, from 0 to 1
+- **trusted** — the strictest expected-accuracy tier the call clears from calibrated confidence ×
+  synteny (`0.99`, `0.95`, or blank); the same trusted-region gate used in the paper
 - **driving_neighbours** — which neighbouring genes led to the prediction
 
 Add `--gff-out result.gff` to also get an annotated GFF you can load into a genome browser.
@@ -98,6 +112,11 @@ Add `--gff-out result.gff` to also get an annotated GFF you can load into a geno
 | `--gff-out FILE` | also write an annotated GFF |
 | `--device {auto,cpu,cuda}` | run on CPU or GPU (auto by default) |
 
+## How it works, briefly
+
+Synnotate learns which gene neighbourhoods go with which functions. A gene with no known match still
+sits in a recognisable neighbourhood, so Synnotate can name it — and every prediction can be traced
+back to the specific neighbours that supported it.
 
 ## Citation & license
 

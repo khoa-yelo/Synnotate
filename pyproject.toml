@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "synnotate"
-version = "0.1.1"
+version = "0.2.0"
 description = "Synteny-transformer gene-function annotation from genomic context (phage & prokaryote)"
 readme = "README.md"
 requires-python = ">=3.10"

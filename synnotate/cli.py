@@ -29,11 +29,11 @@ def cmd_annotate(a):
                                workdir=a.out + "_work", threads=a.threads,
                                phage=(organism == "phage"), backend=a.backend)
     tsv = a.out + ".synnotate.tsv"
-    cols = ["gene_id", "contig", "start", "end", "strand", "annotation", "prediction", "confidence",
-            "category", "top5"]
+    cols = ["gene_id", "contig", "start", "end", "strand", "annotation", "prediction",
+            "confidence", "confidence_raw", "category", "top5"]
     if a.interpret:
-        cols += ["adjusted_confidence", "synteny_support", "mean_flank_ident",
-                 "target_slot_conserved", "driving_neighbours"]
+        cols += ["synteny_support", "mean_flank_ident", "target_slot_conserved",
+                 "trusted", "driving_neighbours"]
     with open(tsv, "w", newline="") as fh:
         w = csv.DictWriter(fh, fieldnames=cols, extrasaction="ignore", delimiter="\t")
         w.writeheader(); w.writerows(rows)
@@ -48,20 +48,20 @@ def _write_gff(rows, path):
         fh.write("##gff-version 3\n")
         for r in rows:
             attrs = f"ID={r['gene_id']};product={r['prediction']};synnotate_confidence={r['confidence']}"
-            if "adjusted_confidence" in r:
-                attrs += f";synnotate_adjusted={r['adjusted_confidence']}"
+            if r.get("trusted"):
+                attrs += f";synnotate_trusted={r['trusted']}"
             fh.write(f"{r['contig']}\tsynnotate\tCDS\t{r['start']}\t{r['end']}\t.\t{r['strand']}\t.\t{attrs}\n")
 
 
 # Bundle registry — the download URL + md5 of each published bundle tarball. Fill `url`/`md5` at
 # release time (e.g. a Zenodo record) or override per-run with $SYNNOTATE_BUNDLE_URL_<ORGANISM>.
 BUNDLE_REGISTRY = {
-    "prokaryote": {"version": "v3",
+    "prokaryote": {"version": "v3-d384",
                    "url": os.environ.get("SYNNOTATE_BUNDLE_URL_PROKARYOTE", ""),
-                   "md5": os.environ.get("SYNNOTATE_BUNDLE_MD5_PROKARYOTE", "")},
-    "phage":      {"version": "v3",
+                   "md5": os.environ.get("SYNNOTATE_BUNDLE_MD5_PROKARYOTE", "4905ef5d27b9b6d9f350eb44593d5dfa")},
+    "phage":      {"version": "v3-d384",
                    "url": os.environ.get("SYNNOTATE_BUNDLE_URL_PHAGE", ""),
-                   "md5": os.environ.get("SYNNOTATE_BUNDLE_MD5_PHAGE", "")},
+                   "md5": os.environ.get("SYNNOTATE_BUNDLE_MD5_PHAGE", "94a7592108a96726e2d241aa579bf08f")},
 }
 
 

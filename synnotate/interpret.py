@@ -11,16 +11,21 @@ from __future__ import annotations
 import numpy as np
 
 
-def nw(Q, R, W, SPECIAL, gap=-1.0):
-    """Needleman-Wunsch over two token windows. Returns (flank_identity, aligned_centre_token)."""
+def nw(Q, R, W, SPECIAL, hyp, edge, gap=-1.0):
+    """Needleman-Wunsch over two token windows. Returns (flank_identity, aligned_centre_token).
+    Substitution scoring matches the deployed scorer (scripts/fig/synteny_k5_bact.py): identical
+    non-reserved tokens +2, the masked-target (hyp) or contig-edge (edge) positions 0 (neutral),
+    every other pair -1; gaps -1. Aligning these exactly keeps the synteny score on the same scale
+    the trusted-region contours were fit on."""
     n, m = len(Q), len(R)
-    S = np.zeros((n, m))
+    S = np.full((n, m), -1.0)
     for i in range(n):
         qi = Q[i]
-        if qi in SPECIAL:
-            continue
         for j in range(m):
-            if R[j] == qi:
+            rj = R[j]
+            if qi == hyp or rj == hyp or qi == edge or rj == edge:
+                S[i, j] = 0.0
+            elif qi == rj and qi not in SPECIAL:
                 S[i, j] = 2.0
     H = np.zeros((n+1, m+1)); P = np.zeros((n+1, m+1), np.int8)
     for i in range(1, n+1): H[i, 0] = i*gap; P[i, 0] = 1
@@ -63,8 +68,8 @@ def synteny(query_emb, query_fam, query_genome, bundle, k=5):
         R[W] = bundle.vocab.get(bundle.ilabel.get(int(ml[jj])), bundle.OTHER)   # unmask retrieved centre
         # some retrieved loci are reverse-complemented (reversed gene order) vs the query -> try both
         # orientations and keep the better-aligning one (window is odd-length, so centre is invariant)
-        ident, aR = nw(query_fam, R, W, SPECIAL)
-        ident_r, aR_r = nw(query_fam, R[::-1].copy(), W, SPECIAL)
+        ident, aR = nw(query_fam, R, W, SPECIAL, bundle.HYP_TARGET, bundle.CONTIG_EDGE)
+        ident_r, aR_r = nw(query_fam, R[::-1].copy(), W, SPECIAL, bundle.HYP_TARGET, bundle.CONTIG_EDGE)
         if ident_r > ident:
             ident, aR = ident_r, aR_r
         idents.append(ident)
