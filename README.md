@@ -1,14 +1,8 @@
 # Synnotate
 
-**Annotate bacterial and phage genomes — including the genes other tools leave as "hypothetical protein."**
+**Context-based annotation of bacterial and phage genomes"
 
-Synnotate works out what a gene does from the company it keeps: the genes around it. Because it
-reads a gene's *neighbourhood* instead of its sequence, it can put a name to genes that have no known
-match in any database — the "dark" genes that ordinary annotation leaves blank.
-
-For every gene you get a predicted function and a confidence score. You can also ask Synnotate to
-show its evidence: whether the same gene neighbourhood turns up in other genomes, and which
-neighbours led it to the answer.
+Synnotate annotates genes remains unannotated after sequence and structural similarity search ("hypothetical/uncharacterized protein") based on neighbor genes annnotation
 
 ## Install
 
@@ -104,11 +98,6 @@ Add `--gff-out result.gff` to also get an annotated GFF you can load into a geno
 | `--gff-out FILE` | also write an annotated GFF |
 | `--device {auto,cpu,cuda}` | run on CPU or GPU (auto by default) |
 
-## How it works, briefly
-
-Synnotate learns which gene neighbourhoods go with which functions. A gene with no known match still
-sits in a recognisable neighbourhood, so Synnotate can name it — and every prediction can be traced
-back to the specific neighbours that supported it.
 
 ## Citation & license
 
