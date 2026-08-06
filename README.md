@@ -1,18 +1,37 @@
 # Synnotate
 
-**Annotate bacterial and phage genomes — including the genes other tools leave as "hypothetical protein."**
+**Genomic-context annotation of the prokaryotic and viral dark proteome — putting a name to the genes homology leaves as "hypothetical protein."**
 
-Synnotate works out what a gene does from the company it keeps: the genes around it. Because it
-reads a gene's *neighbourhood* instead of its sequence, it can put a name to genes that have no known
-match in any database — the "dark" genes that ordinary annotation leaves blank.
+Sequencing has expanded the catalog of microbial and viral proteins faster than we can annotate them:
+an estimated 20–30% of bacterial and ~65% of bacteriophage proteins have no assigned function.
+Annotation relies mostly on homology transfer, which performs poorly for proteins with no informative
+sequence or structural match — the **dark proteome**.
 
-For every gene you get a predicted function and a confidence score. You can also ask Synnotate to
-show its evidence: whether the same gene neighbourhood turns up in other genomes, and which
-neighbours led it to the answer.
+Synnotate names these genes from a different signal: **the company they keep**. Functionally related
+genes cluster in conserved genomic neighbourhoods, so the genes flanking an uncharacterized protein
+carry evidence for its function even when no homolog is detectable. Synnotate represents each
+neighbourhood as a sequence of standardized functional-annotation tokens and predicts the central
+gene's function with a Transformer. Unlike black-box context methods, every prediction comes with a
+**calibrated confidence** (read it directly as an expected accuracy), **exact per-neighbour
+attribution**, and **retrieved reference neighbourhoods** as supporting evidence.
+
+Applied at scale, Synnotate confidently annotates **4.9% of previously unannotated genes in
+bacteriophage genomes and 2.0% in prokaryotic genomes** — extending functional annotation and genome
+mining beyond the reach of sequence and structural similarity alone.
+
+![Synnotate overview](https://raw.githubusercontent.com/khoa-yelo/Synnotate/main/docs/synnotate_overview.png)
+
+> **(A) Training** — a masked-token Transformer learns to predict the central gene of a 21-gene window
+> from its neighbours' standardized annotations plus strand, intergenic distance, and relative position.
+> **(B) Inference** — for a hypothetical protein it returns a prediction with a calibrated confidence,
+> per-neighbour attribution, and the *k* nearest reference neighbourhoods from a vector database.
+> **(C) Post-hoc alignment** — a synteny score (target alignment × flank identity) corroborates each call.
 
 ## Install
 
 ```bash
+pip install synnotate                                         # from PyPI
+# or the latest development version from GitHub:
 pip install git+https://github.com/khoa-yelo/Synnotate.git
 ```
 
