@@ -6,8 +6,7 @@ Synnotate is an interpretable framework for annotating uncharacterized microbial
 from genomic context, beyond sequence and structural homology. It represents a gene's neighbourhood
 as standardized functional-annotation tokens and infers the target gene's function with a
 Transformer, reporting a calibrated confidence, exact per-neighbour attribution, and retrieved
-reference neighbourhoods. Applied at scale, Synnotate confidently annotates **4.9% of previously
-unannotated genes in bacteriophage genomes and 2.0% in prokaryotic genomes**.
+reference neighbourhoods.
 
 ![Synnotate overview](https://raw.githubusercontent.com/khoa-yelo/Synnotate/main/docs/synnotate_overview.png)
 
@@ -120,12 +119,6 @@ Add `--gff-out result.gff` to also get an annotated GFF you can load into a geno
 | `--out NAME` | name for the output files |
 | `--gff-out FILE` | also write an annotated GFF |
 | `--device {auto,cpu,cuda}` | run on CPU or GPU (auto by default) |
-
-## How it works, briefly
-
-Synnotate learns which gene neighbourhoods go with which functions. A gene with no known match still
-sits in a recognisable neighbourhood, so Synnotate can name it — and every prediction can be traced
-back to the specific neighbours that supported it.
 
 ## Citation & license
 
