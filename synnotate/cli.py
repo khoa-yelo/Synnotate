@@ -56,11 +56,13 @@ def _write_gff(rows, path):
 # Bundle registry — the download URL + md5 of each published bundle tarball. Fill `url`/`md5` at
 # release time (e.g. a Zenodo record) or override per-run with $SYNNOTATE_BUNDLE_URL_<ORGANISM>.
 BUNDLE_REGISTRY = {
-    "prokaryote": {"version": "v3-d384",
-                   "url": os.environ.get("SYNNOTATE_BUNDLE_URL_PROKARYOTE", ""),
+    "prokaryote": {"version": "v1",
+                   "url": os.environ.get("SYNNOTATE_BUNDLE_URL_PROKARYOTE",
+                                         "https://zenodo.org/records/21821532/files/synnotate_prokaryote.tar.gz?download=1"),
                    "md5": os.environ.get("SYNNOTATE_BUNDLE_MD5_PROKARYOTE", "4905ef5d27b9b6d9f350eb44593d5dfa")},
-    "phage":      {"version": "v3-d384",
-                   "url": os.environ.get("SYNNOTATE_BUNDLE_URL_PHAGE", ""),
+    "phage":      {"version": "v1",
+                   "url": os.environ.get("SYNNOTATE_BUNDLE_URL_PHAGE",
+                                         "https://zenodo.org/records/21821532/files/synnotate_phage.tar.gz?download=1"),
                    "md5": os.environ.get("SYNNOTATE_BUNDLE_MD5_PHAGE", "94a7592108a96726e2d241aa579bf08f")},
 }
 
