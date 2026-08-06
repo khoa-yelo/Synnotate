@@ -1,23 +1,13 @@
 # Synnotate
 
-**Genomic-context annotation of the prokaryotic and viral dark proteome — putting a name to the genes homology leaves as "hypothetical protein."**
+**Genomic-context annotation of the prokaryotic and viral dark proteome.**
 
-Sequencing has expanded the catalog of microbial and viral proteins faster than we can annotate them:
-an estimated 20–30% of bacterial and ~65% of bacteriophage proteins have no assigned function.
-Annotation relies mostly on homology transfer, which performs poorly for proteins with no informative
-sequence or structural match — the **dark proteome**.
-
-Synnotate names these genes from a different signal: **the company they keep**. Functionally related
-genes cluster in conserved genomic neighbourhoods, so the genes flanking an uncharacterized protein
-carry evidence for its function even when no homolog is detectable. Synnotate represents each
-neighbourhood as a sequence of standardized functional-annotation tokens and predicts the central
-gene's function with a Transformer. Unlike black-box context methods, every prediction comes with a
-**calibrated confidence** (read it directly as an expected accuracy), **exact per-neighbour
-attribution**, and **retrieved reference neighbourhoods** as supporting evidence.
-
-Applied at scale, Synnotate confidently annotates **4.9% of previously unannotated genes in
-bacteriophage genomes and 2.0% in prokaryotic genomes** — extending functional annotation and genome
-mining beyond the reach of sequence and structural similarity alone.
+Synnotate is an interpretable framework for annotating uncharacterized microbial and viral proteins
+from genomic context, beyond sequence and structural homology. It represents a gene's neighbourhood
+as standardized functional-annotation tokens and infers the target gene's function with a
+Transformer, reporting a calibrated confidence, exact per-neighbour attribution, and retrieved
+reference neighbourhoods. Applied at scale, Synnotate confidently annotates **4.9% of previously
+unannotated genes in bacteriophage genomes and 2.0% in prokaryotic genomes**.
 
 ![Synnotate overview](https://raw.githubusercontent.com/khoa-yelo/Synnotate/main/docs/synnotate_overview.png)
 
