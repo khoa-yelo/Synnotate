@@ -1,13 +1,13 @@
 {% set name = "synnotate" %}
-{% set version = "0.1.0" %}
+{% set version = "0.2.0" %}
 
 package:
   name: {{ name }}
   version: {{ version }}
 
 source:
-  url: https://github.com/khoa-yelo/Synnotate/archive/refs/tags/v{{ version }}.tar.gz
-  sha256: eebe309b366fafc940210a04f97fa813b6060a580dd9d0f9a8a2336992c35abc
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 8cf427f4c77a9056ad9d3798ac0865f1bc840694ff72a11559bea8b4512374ca
 
 build:
   noarch: python
@@ -30,7 +30,6 @@ requirements:
     - pyarrow >=12
     - biopython >=1.81
     - pyrodigal >=3.0
-    - pyrodigal-gv
 
 test:
   imports:
@@ -44,15 +43,16 @@ about:
   license: MIT
   license_family: MIT
   license_file: LICENSE
-  summary: "Synteny-transformer gene-function annotation from genomic context, including the dark proteome"
+  summary: "Genomic-context annotation of the prokaryotic and viral dark proteome"
   description: |
-    Synnotate predicts a gene's function from its genomic neighbourhood using an interpretable
-    additive context transformer, annotating genes that sequence-homology tools leave as
-    "hypothetical protein" (the dark proteome). Predictions carry a softmax confidence and an
-    optional kNN + MSA synteny-adjusted confidence plus exact per-neighbour attributions. The
-    model, vocabulary, and FAISS retrieval index are downloaded separately via `synnotate setup`.
-    Neighbour annotation uses GFF product-string matching, a user table, eggNOG-mapper
-    (prokaryote), or Pharokka (phage).
+    Synnotate is an interpretable framework for annotating uncharacterized microbial and viral
+    proteins from genomic context, beyond sequence and structural homology. It represents a gene's
+    neighbourhood as standardized functional-annotation tokens and predicts the target gene's
+    function with an additive context transformer, reporting a calibrated (isotonic) confidence, a
+    trusted-region gate over confidence x synteny, exact per-neighbour attributions, and retrieved
+    reference neighbourhoods. The model, vocabulary, and FAISS retrieval index are downloaded
+    separately via `synnotate setup`. Neighbour annotation uses GFF product-string matching, a user
+    table, eggNOG-mapper (prokaryote), or Pharokka (phage).
   dev_url: https://github.com/khoa-yelo/Synnotate
 
 extra:

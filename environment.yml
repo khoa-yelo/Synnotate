@@ -1,0 +1,25 @@
+# Ready-to-use Synnotate environment.
+# The heavy dependencies (PyTorch, FAISS, NumPy, ...) install as prebuilt conda binaries, which
+# avoids the "cannot compile numpy/torch from source" failures on clusters with old toolchains.
+#
+#   conda env create -f environment.yml      # or: mamba env create -f environment.yml
+#   conda activate synnotate
+#   synnotate setup --type prokaryote --dir ./synnotate_db
+#
+name: synnotate
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - python >=3.10,<3.13
+  - numpy >=1.24
+  - pandas >=2.0
+  - pyarrow >=12
+  - pytorch >=2.1
+  - faiss-cpu >=1.7
+  - biopython >=1.81
+  - pyrodigal >=3.0        # gene-calling for FASTA input without a GFF
+  - pip
+  - pip:
+      - --no-deps          # deps above come from conda; pip only adds Synnotate's own code
+      - synnotate

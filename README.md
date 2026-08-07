@@ -24,6 +24,24 @@ pip install synnotate                                         # from PyPI
 pip install git+https://github.com/khoa-yelo/Synnotate.git
 ```
 
+**With conda (recommended on clusters, or if `pip` tries to build numpy/torch from source).**
+Synnotate depends on PyTorch and FAISS; installing those as prebuilt conda binaries avoids
+compiler-toolchain issues. Create a ready-to-use environment from the provided file:
+
+```bash
+conda env create -f environment.yml      # or: mamba env create -f environment.yml
+conda activate synnotate
+```
+
+or into an existing environment:
+
+```bash
+conda install -c conda-forge -c bioconda python=3.11 numpy pandas pyarrow pytorch faiss-cpu biopython pyrodigal
+pip install --no-deps synnotate
+```
+
+Synnotate targets **Python 3.10–3.12**.
+
 Then download the data Synnotate needs into a folder of your choice (do this once):
 
 ```bash
